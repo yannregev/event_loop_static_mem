@@ -13,6 +13,7 @@ CRITICAL_SECTION cs;
 
 #define BEGIN_CRITICAL_SECTION EnterCriticalSection(&cs);
 #define END_CRITICAL_SECTION LeaveCriticalSection(&cs);
+#define INITIALIZE_CRITICAL_SECTION InitializeCriticalSection(&cs);
 
 #else
 #include <pthread.h>
@@ -21,6 +22,7 @@ pthread_mutex_t cs = PTHREAD_MUTEX_INITIALIZER;
 
 #define BEGIN_CRITICAL_SECTION pthread_mutex_lock(&cs);
 #define END_CRITICAL_SECTION   pthread_mutex_unlock(&cs);
+#define INITIALIZE_CRITICAL_SECTION
 #endif
 #include "eventqueue.h"
 #include "events.h"
@@ -50,14 +52,14 @@ static uint16_t closoureIndex;
 void Run_Closures(void) {
     if (eventQueue.head == eventQueue.tail) { return; }
     while (eventQueue.head != eventQueue.tail) {
-        uint8_t buffer[sizeof(struct Node_t)];
+        uint8_t buffer[sizeof(Node_t)];
         for (int i = 0; i < sizeof(buffer); i++) {
             buffer[i] =  eventQueue.pendingClosures[eventQueue.tail];
             eventQueue.tail = (eventQueue.tail + 1) & (PENDING_CLOSURE_SIZE - 1);
         }
-        struct Node_t *node = (struct Node_t*)buffer;
+        Node_t *node = (Node_t*)buffer;
         uint8_t data[node->size];
-        for (int i = 0; i < sizeof(data); i++) {
+        for (int i = 0; i < node->size; i++) {
             data[i] =  eventQueue.pendingClosures[eventQueue.tail];
             eventQueue.tail = (eventQueue.tail + 1) & (PENDING_CLOSURE_SIZE - 1);
         }
@@ -68,7 +70,7 @@ void Run_Closures(void) {
 void EventActivate(uint16_t event, const uint16_t size, const void *data) {
     if (event == EVENT_NONE || event >= NUMBER_OF_EVENTS) { return; }
 
-    size_t nodeSize = sizeof(struct Node_t) + size;
+    size_t nodeSize = sizeof(Node_t) + size;
 
     uint16_t entryIndex = 0;
     Function_t *entry = closures[event];
@@ -82,12 +84,12 @@ void EventActivate(uint16_t event, const uint16_t size, const void *data) {
             return;
         }
         uint8_t buffer[nodeSize];
-        struct Node_t *node = (struct Node_t*)buffer;
-        node->data = (void*)&buffer[sizeof(struct Node_t)];
+        Node_t *node = (Node_t*)buffer;
+        node->data = (void*)&buffer[sizeof(Node_t)];
         node->size = size;
         node->func = entry[entryIndex];
         memcpy(node->data, data, size);
-        for (int i = 0; i < sizeof(struct Node_t) + size; i++) {
+        for (int i = 0; i < sizeof(Node_t) + size; i++) {
             eventQueue.pendingClosures[eventQueue.head] = ((uint8_t*)node)[i];
             eventQueue.head = (eventQueue.head + 1) & (PENDING_CLOSURE_SIZE - 1);
         }
@@ -134,7 +136,7 @@ void RemoveClosure(uint16_t event, Function_t func) {
 
 void InitEventQueue(void) {
     memset(closures, 0, sizeof(void*) * CLOSURE_MEM_SIZE * MAX_EVENT_LISTENERS);
-    InitializeCriticalSection(&cs);
+    INITIALIZE_CRITICAL_SECTION
     closoureIndex = 0;
     eventQueue.head = eventQueue.tail = 0;
 }
