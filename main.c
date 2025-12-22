@@ -57,10 +57,10 @@ int main(int argv, char **argc){
     InitDelayedFunction();
     InitPeriodicFunctions();
 
-    AddClosure(EVENT_ONE, CallbackTest);
-    AddClosure(EVENT_TWO, CallbackTest2);
-    ActivateClosure(EVENT_ONE, 2, (uint8_t[]) {2, 4 });
-    ActivateClosure(EVENT_TWO, 3, (uint8_t[]) {2, 4, 6 });
+    EventAddCallback(EVENT_ONE, CallbackTest);
+    EventAddCallback(EVENT_TWO, CallbackTest2);
+    EventActivate(EVENT_ONE, 2, (uint8_t[]) {2, 4 });
+    EventActivate(EVENT_TWO, 3, (uint8_t[]) {2, 4, 6 });
     //ActivateClosure(EVENT_TWO, 1, (uint8_t[]) {4});
     //ActivateClosure(EVENT_TWO, 1, (uint8_t[]) {3});
 
@@ -85,7 +85,7 @@ int main(int argv, char **argc){
     while(GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
-        ActivateClosure(EVENT_ONE, 2, (uint8_t[]) {2, 4 });
+        EventActivate(EVENT_ONE, 2, (uint8_t[]) {2, 4 });
         Run_Closures();
     }
     printf("Done\n");
