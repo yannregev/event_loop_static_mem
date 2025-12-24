@@ -3,6 +3,8 @@
 
 #include <inttypes.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 typedef const void (*Function_t)(uint16_t, const void *);
 
@@ -13,3 +15,4 @@ typedef struct {
 }Node_t;
 
 #endif //INCLUDES_H
+

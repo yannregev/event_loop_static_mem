@@ -18,7 +18,7 @@ CRITICAL_SECTION cs;
 #else
 #include <pthread.h>
 
-pthread_mutex_t cs = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t cs = PTHREAD_MUTEX_INITIALIZER;
 
 #define BEGIN_CRITICAL_SECTION pthread_mutex_lock(&cs);
 #define END_CRITICAL_SECTION   pthread_mutex_unlock(&cs);
@@ -67,6 +67,21 @@ void Run_Closures(void) {
     }
 }
 
+void DelayedFunctionActivate(Function_t func) {
+    if (func == NULL) { return; }
+    size_t nodeSize = sizeof(Node_t);
+    uint8_t buffer[nodeSize];
+    Node_t *node = (Node_t*)buffer;
+    node->func = func;
+    node->size = 0;
+    BEGIN_CRITICAL_SECTION
+    for (int i = 0; i < nodeSize; i++) {
+        eventQueue.pendingClosures[eventQueue.head] = ((uint8_t*)node)[i];
+        eventQueue.head = (eventQueue.head + 1) & (PENDING_CLOSURE_SIZE - 1);
+    }
+    END_CRITICAL_SECTION
+}
+
 void EventActivate(uint16_t event, const uint16_t size, const void *data) {
     if (event == EVENT_NONE || event >= NUMBER_OF_EVENTS) { return; }
 
@@ -89,7 +104,7 @@ void EventActivate(uint16_t event, const uint16_t size, const void *data) {
         node->size = size;
         node->func = entry[entryIndex];
         memcpy(node->data, data, size);
-        for (int i = 0; i < sizeof(Node_t) + size; i++) {
+        for (int i = 0; i < nodeSize; i++) {
             eventQueue.pendingClosures[eventQueue.head] = ((uint8_t*)node)[i];
             eventQueue.head = (eventQueue.head + 1) & (PENDING_CLOSURE_SIZE - 1);
         }

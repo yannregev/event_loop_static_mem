@@ -43,9 +43,14 @@ static void DelayedFunctionTest3(uint16_t, const void*) {
     printf("delayed callback!3\n");
 }
 
-static void PeriodicFunction(uint16_t, const void*) {
+static void PeriodicFunction1(uint16_t, const void*) {
+    static int i = 0;
+    printf("Periodic func1 called %d times\n", ++i);
+}
 
-    printf("Periodic func!\n");
+static void PeriodicFunction2(uint16_t, const void*) {
+    static int i = 0;
+    printf("Periodic func2 called %d times\n", ++i);
 }
 
 #ifdef WIN32
@@ -61,7 +66,8 @@ VOID CALLBACK IRQ_Tick(
 
 #else
 void timer_callback(union sigval sv) {
-    printf("Timer expired!\n");
+    PeriodicFunction_IRQTick();
+    DelayedFunctions_IRQTick();
 }
 
 void Setup_Timer(void) {
@@ -115,7 +121,9 @@ int main(int argv, char **argc){
     AddDelayedFunction(DelayedFunctionTest, 10);
     AddDelayedFunction(DelayedFunctionTest3, 100);
 */
-
+    AddDelayedFunction(DelayedFunctionTest3, 10000);
+    AddPeriodicFunction(PeriodicFunction1, 5000);
+    AddPeriodicFunction(PeriodicFunction2, 1000);
 //    RemoveClosure(EVENT_ONE, CallbackTest);
     
 //    AddPeriodicFunction(PeriodicFunction, 100);
@@ -130,7 +138,6 @@ int main(int argv, char **argc){
     Setup_Timer();
 #endif
     while(1) {
-        //EventActivate(EVENT_ONE, 2, (uint8_t[]) {2, 4 });
         Run_Closures();
     }
     printf("Done\n");
