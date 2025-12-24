@@ -1,25 +1,7 @@
 #include "periodicfunctions.h"
 #include "eventqueue.h"
 #include "stdio.h"
-
-#ifdef WIN32
-#include <windows.h>
-
-CRITICAL_SECTION cs;
-
-#define BEGIN_CRITICAL_SECTION EnterCriticalSection(&cs);
-#define END_CRITICAL_SECTION LeaveCriticalSection(&cs);
-#define INITIALIZE_CRITICAL_SECTION InitializeCriticalSection(&cs);
-
-#else
-#include <pthread.h>
-
-static pthread_mutex_t cs = PTHREAD_MUTEX_INITIALIZER;
-
-#define BEGIN_CRITICAL_SECTION pthread_mutex_lock(&cs);
-#define END_CRITICAL_SECTION   pthread_mutex_unlock(&cs);
-#define INITIALIZE_CRITICAL_SECTION
-#endif
+#include "criticalsection.h"
 
 typedef struct {
    Function_t func;
@@ -67,6 +49,7 @@ void AddPeriodicFunction(Function_t func, uint16_t period) {
     }
 
     PeriodicFunction_t *entry = periodicFunctions;
+    BEGIN_CRITICAL_SECTION
     while (entry->func != NULL && entry->func != func) {
         entry++;
         if (entry >= &periodicFunctions[PERIODIC_FUNC_SIZE]) {
@@ -74,6 +57,7 @@ void AddPeriodicFunction(Function_t func, uint16_t period) {
             return;
         }
     }
+    END_CRITICAL_SECTION
     entry->delay = period;
     entry->period = period;
     entry->func = func;

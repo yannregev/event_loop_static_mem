@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "events.h"
+
 typedef const void (*Function_t)(uint16_t, const void *);
 
 typedef struct {

@@ -1,3 +1,6 @@
+#ifndef EVENTS_H
+#define EVENTS_H
+
 typedef enum {
     EVENT_NONE,
     EVENT_ONE,
@@ -5,3 +8,5 @@ typedef enum {
 
     NUMBER_OF_EVENTS,
 }Events_t;
+
+#endif

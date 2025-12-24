@@ -49,8 +49,21 @@ static void PeriodicFunction1(uint16_t, const void*) {
 }
 
 static void PeriodicFunction2(uint16_t, const void*) {
-    static int i = 0;
-    printf("Periodic func2 called %d times\n", ++i);
+    #include <time.h>
+    #include <stdlib.h>
+    //system("@cls||clear");
+    time_t rawtime;
+    struct tm * timeinfo;
+    time ( &rawtime );
+    static time_t prevTime = 0;
+    if (prevTime == rawtime) {
+        fprintf(stderr, "Clock scewed!\n");
+        exit(1);
+    }
+    prevTime = rawtime;
+    timeinfo = localtime ( &rawtime );
+    printf ( "rawtime: %ld\n", rawtime );
+
 }
 
 #ifdef WIN32
@@ -74,7 +87,7 @@ void Setup_Timer(void) {
     struct sigevent sev;
     struct itimerspec its;
     timer_t timerid;
-    int interval_ms = 1;  // Timer interval in milliseconds
+    int interval_ms = 2;  // Timer interval in milliseconds (for some reason 2 is 1ms)
 
     // Set up the signal event structure
     sev.sigev_notify = SIGEV_THREAD;        // Notify via a separate thread
@@ -88,7 +101,7 @@ void Setup_Timer(void) {
         exit(EXIT_FAILURE);
     }
 
-    // Set up the timer to expire every 10ms
+    // Set up the timer to expire every ms
     its.it_value.tv_sec = 0;                          // Initial expiration in seconds
     its.it_value.tv_nsec = interval_ms * 1000000;     // Convert ms to ns
     its.it_interval.tv_sec = 0;                       // Periodic timer
@@ -122,7 +135,6 @@ int main(int argv, char **argc){
     AddDelayedFunction(DelayedFunctionTest3, 100);
 */
     AddDelayedFunction(DelayedFunctionTest3, 10000);
-    AddPeriodicFunction(PeriodicFunction1, 5000);
     AddPeriodicFunction(PeriodicFunction2, 1000);
 //    RemoveClosure(EVENT_ONE, CallbackTest);
     

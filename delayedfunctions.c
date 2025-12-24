@@ -1,6 +1,8 @@
 #include "delayedfunctions.h"
+#include "includes.h"
 #include "eventqueue.h"
-#include <stdio.h>
+#include "criticalsection.h"
+
 
 typedef struct {
     Function_t func;
@@ -17,7 +19,7 @@ void AddDelayedFunction(Function_t func, uint16_t delay) {
         DelayedFunctionActivate(func);
         return;
     }
-
+    BEGIN_CRITICAL_SECTION
     DelayedFunc_t *entry = delayedFunctions;
     while (entry->func != NULL && entry->func != func) {
         entry++;
@@ -28,10 +30,12 @@ void AddDelayedFunction(Function_t func, uint16_t delay) {
     }
     entry->delay = delay;
     entry->func = func;
+    END_CRITICAL_SECTION
 }
 
 void RemoveDelayFunction(Function_t func) {
     DelayedFunc_t *entry = delayedFunctions;
+    BEGIN_CRITICAL_SECTION
     while (entry != NULL && entry->func != func) {
         entry++;
     }
@@ -41,10 +45,12 @@ void RemoveDelayFunction(Function_t func) {
         *entry = *(entry + 1);
         entry++;
     }
+    END_CRITICAL_SECTION
 }
 
 void DelayedFunctions_IRQTick(void) {
     DelayedFunc_t *entry = delayedFunctions;
+    BEGIN_CRITICAL_SECTION
     while (entry->func != NULL && entry < &delayedFunctions[PERIODIC_FUNC_SIZE]) {
         if (--entry->delay <= 0) {
             DelayedFunctionActivate(entry->func);
@@ -53,8 +59,10 @@ void DelayedFunctions_IRQTick(void) {
             entry++;
         }
     }
+    END_CRITICAL_SECTION
 }
 
 void InitDelayedFunction(void) {
- memset(delayedFunctions, 0, PERIODIC_FUNC_SIZE);
+    INITIALIZE_CRITICAL_SECTION
+    memset(delayedFunctions, 0, PERIODIC_FUNC_SIZE);
 }
