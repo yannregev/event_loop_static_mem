@@ -33,8 +33,12 @@ void Run_Closures(void) {
             data[i] =  eventQueue.pendingClosures[eventQueue.tail];
             eventQueue.tail = (eventQueue.tail + 1) & (PENDING_CLOSURE_SIZE - 1);
         }
+	Function_t func = node->func;
+        int size = node->size;
+        uint8_t buf[size];
+        memcpy(buf, data ,size);
         END_CRITICAL_SECTION
-        node->func(node->size, &data);
+        func(size, &buf);
     }
 }
 
