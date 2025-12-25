@@ -11,8 +11,8 @@ Map to list of functions
 
 typedef struct {
     uint8_t pendingClosures[PENDING_CLOSURE_SIZE];
-    uint8_t head;
-    uint8_t tail;
+    uint16_t head;
+    uint16_t tail;
 } Queue_t;
 
 static Function_t closures[CLOSURE_MEM_SIZE][MAX_EVENT_LISTENERS];
