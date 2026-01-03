@@ -3,3 +3,5 @@
 CMakePresets.json
 /build/
 main.c
+criticalsection.h
+criticalsection.c
