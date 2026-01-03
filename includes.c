@@ -2,9 +2,9 @@
 
 
 void Events_Init(void) {
-  InitDelayedFunction();
-  InitEventQueue();
-  InitPeriodicFunctions();
+  DelayedFunction_Init();
+  EventQueue_Init();
+  PeriodicFunctions_Init();
 }
 
 void Events_Tick(void) {
