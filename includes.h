@@ -16,5 +16,12 @@ typedef struct {
     uint16_t size;
 }Node_t;
 
+#include "delayedfunctions.h"
+#include "periodicfunctions.h"
+#include "eventqueue.h"
+
+void Events_Init(void);
+void Events_Tick(void);
+
 #endif //INCLUDES_H
 
