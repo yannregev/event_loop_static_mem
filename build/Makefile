@@ -249,6 +249,30 @@ periodicfunctions.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/libev.dir/build.make CMakeFiles/libev.dir/periodicfunctions.c.s
 .PHONY : periodicfunctions.c.s
 
+queue.o: queue.c.o
+.PHONY : queue.o
+
+# target to build an object file
+queue.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libev.dir/build.make CMakeFiles/libev.dir/queue.c.o
+.PHONY : queue.c.o
+
+queue.i: queue.c.i
+.PHONY : queue.i
+
+# target to preprocess a source file
+queue.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libev.dir/build.make CMakeFiles/libev.dir/queue.c.i
+.PHONY : queue.c.i
+
+queue.s: queue.c.s
+.PHONY : queue.s
+
+# target to generate assembly for a file
+queue.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/libev.dir/build.make CMakeFiles/libev.dir/queue.c.s
+.PHONY : queue.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -273,6 +297,9 @@ help:
 	@echo "... periodicfunctions.o"
 	@echo "... periodicfunctions.i"
 	@echo "... periodicfunctions.s"
+	@echo "... queue.o"
+	@echo "... queue.i"
+	@echo "... queue.s"
 .PHONY : help
 
 

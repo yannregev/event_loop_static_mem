@@ -13,6 +13,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/yannregev/code/event_loop_static_mem/includes.c" "CMakeFiles/libev.dir/includes.c.o" "gcc" "CMakeFiles/libev.dir/includes.c.o.d"
   "/home/yannregev/code/event_loop_static_mem/main.c" "CMakeFiles/libev.dir/main.c.o" "gcc" "CMakeFiles/libev.dir/main.c.o.d"
   "/home/yannregev/code/event_loop_static_mem/periodicfunctions.c" "CMakeFiles/libev.dir/periodicfunctions.c.o" "gcc" "CMakeFiles/libev.dir/periodicfunctions.c.o.d"
+  "/home/yannregev/code/event_loop_static_mem/queue.c" "CMakeFiles/libev.dir/queue.c.o" "gcc" "CMakeFiles/libev.dir/queue.c.o.d"
   "" "libev" "gcc" "CMakeFiles/libev.dir/link.d"
   )
 

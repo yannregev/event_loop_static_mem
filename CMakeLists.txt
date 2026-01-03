@@ -11,6 +11,7 @@ set (SOURCES
     delayedfunctions.c
     periodicfunctions.c
     includes.c
+    queue.c
 )
 
 set(HEADERS
@@ -18,6 +19,7 @@ set(HEADERS
     eventqueue.h
     delayedfunctions.h
     periodicfunctions.h
+    queue.h
 )
 
 

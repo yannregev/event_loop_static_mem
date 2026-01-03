@@ -10,6 +10,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/libev.dir/main.c.o.d"
   "CMakeFiles/libev.dir/periodicfunctions.c.o"
   "CMakeFiles/libev.dir/periodicfunctions.c.o.d"
+  "CMakeFiles/libev.dir/queue.c.o"
+  "CMakeFiles/libev.dir/queue.c.o.d"
   "libev"
   "libev.pdb"
 )

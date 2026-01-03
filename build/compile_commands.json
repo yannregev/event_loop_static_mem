@@ -28,5 +28,11 @@
   "command": "/usr/bin/gcc   -g -std=gnu2x -o CMakeFiles/libev.dir/includes.c.o -c /home/yannregev/code/event_loop_static_mem/includes.c",
   "file": "/home/yannregev/code/event_loop_static_mem/includes.c",
   "output": "CMakeFiles/libev.dir/includes.c.o"
+},
+{
+  "directory": "/home/yannregev/code/event_loop_static_mem/build",
+  "command": "/usr/bin/gcc   -g -std=gnu2x -o CMakeFiles/libev.dir/queue.c.o -c /home/yannregev/code/event_loop_static_mem/queue.c",
+  "file": "/home/yannregev/code/event_loop_static_mem/queue.c",
+  "output": "CMakeFiles/libev.dir/queue.c.o"
 }
 ]

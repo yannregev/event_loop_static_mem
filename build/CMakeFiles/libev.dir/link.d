@@ -7,6 +7,7 @@ libev: \
   CMakeFiles/libev.dir/delayedfunctions.c.o \
   CMakeFiles/libev.dir/periodicfunctions.c.o \
   CMakeFiles/libev.dir/includes.c.o \
+  CMakeFiles/libev.dir/queue.c.o \
   /usr/lib/gcc/x86_64-redhat-linux/15/libgcc.a \
   /usr/lib/gcc/x86_64-redhat-linux/15/libgcc_s.so \
   /usr/lib/gcc/x86_64-redhat-linux/15/libgcc_s.so \
@@ -44,6 +45,8 @@ CMakeFiles/libev.dir/delayedfunctions.c.o:
 CMakeFiles/libev.dir/periodicfunctions.c.o:
 
 CMakeFiles/libev.dir/includes.c.o:
+
+CMakeFiles/libev.dir/queue.c.o:
 
 /usr/lib/gcc/x86_64-redhat-linux/15/libgcc.a:
 

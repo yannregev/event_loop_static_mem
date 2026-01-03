@@ -55,6 +55,8 @@ CMakeFiles/libev.dir/main.c.o: \
  /usr/include/bits/uintn-identity.h /usr/include/sys/select.h \
  /usr/include/bits/select.h /usr/include/bits/types/struct_timeval.h \
  /usr/include/alloca.h /usr/include/bits/stdlib-float.h \
+ /usr/include/string.h /usr/include/strings.h \
+ /home/yannregev/code/event_loop_static_mem/events.h \
+ /home/yannregev/code/event_loop_static_mem/queue.h \
  /home/yannregev/code/event_loop_static_mem/delayedfunctions.h \
- /home/yannregev/code/event_loop_static_mem/periodicfunctions.h \
- /home/yannregev/code/event_loop_static_mem/events.h
+ /home/yannregev/code/event_loop_static_mem/periodicfunctions.h
