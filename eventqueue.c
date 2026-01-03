@@ -11,7 +11,7 @@ Map to list of functions
 static Function_t closures[CLOSURE_MEM_SIZE][MAX_EVENT_LISTENERS];
 static Queue_t eventQueue;
 
-void Run_Closures(void) {
+void Run_EventQueue(void) {
     if (IsQueueEmpty(&eventQueue)) { return; }
     while (!IsQueueEmpty(&eventQueue)) {
         BEGIN_CRITICAL_SECTION
@@ -25,7 +25,6 @@ void Run_Closures(void) {
             data[i] = Dequeue(&eventQueue);
         }
 	    Function_t func = node->func;
-        int size = node->size;
         END_CRITICAL_SECTION
         func(node->size, &data);
     }
@@ -55,7 +54,6 @@ void EventActivate(uint16_t event, const uint16_t size, const void *data) {
     Function_t *entry = closures[event];
     while (entry[entryIndex] != NULL && entryIndex < MAX_EVENT_LISTENERS) {
 
-        size_t used = QueueSize(&eventQueue);
         size_t free = QueueFreeSpace(&eventQueue);
         if (nodeSize > free) {
             fprintf(stderr, "Out of memory for closures\n");
@@ -95,7 +93,7 @@ void EventAddCallback(uint16_t event, Function_t func) {
     END_CRITICAL_SECTION
 }
 
-void RemoveClosure(uint16_t event, Function_t func) {
+void EventRemoveCallback(uint16_t event, Function_t func) {
     if (func == NULL || event >= NUMBER_OF_EVENTS) { return; }
     Function_t *entry = closures[event];
 

@@ -1,6 +1,4 @@
-#include "periodicfunctions.h"
-#include "eventqueue.h"
-#include "stdio.h"
+#include "includes.h"
 #include "criticalsection.h"
 
 typedef struct {

@@ -64,5 +64,5 @@ void DelayedFunctions_IRQTick(void) {
 
 void DelayedFunction_Init(void) {
     INITIALIZE_CRITICAL_SECTION
-    memset(delayedFunctions, 0, PERIODIC_FUNC_SIZE);
+    memset(delayedFunctions, 0, sizeof(delayedFunctions));
 }
