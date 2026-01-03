@@ -117,9 +117,9 @@ void Setup_Timer(void) {
 
 int main(int argv, char **argc){
     
-    InitEventQueue();
-    InitDelayedFunction();
-    InitPeriodicFunctions();
+    EventQueue_Init();
+    DelayedFunction_Init();
+    PeriodicFunctions_Init();
     Setup_Timer();
 
     EventAddCallback(EVENT_ONE, CallbackTest);

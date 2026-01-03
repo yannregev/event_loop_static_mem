@@ -5,40 +5,29 @@ Map to list of functions
 #include "eventqueue.h"
 #include "criticalsection.h"
 
-#define PENDING_CLOSURE_SIZE 1024
 #define CLOSURE_MEM_SIZE NUMBER_OF_EVENTS
 #define MAX_EVENT_LISTENERS 10
-
-typedef struct {
-    uint8_t pendingClosures[PENDING_CLOSURE_SIZE];
-    uint16_t head;
-    uint16_t tail;
-} Queue_t;
 
 static Function_t closures[CLOSURE_MEM_SIZE][MAX_EVENT_LISTENERS];
 static Queue_t eventQueue;
 
 void Run_Closures(void) {
-    if (eventQueue.head == eventQueue.tail) { return; }
-    while (eventQueue.head != eventQueue.tail) {
+    if (IsQueueEmpty(&eventQueue)) { return; }
+    while (!IsQueueEmpty(&eventQueue)) {
         BEGIN_CRITICAL_SECTION
         uint8_t buffer[sizeof(Node_t)];
         for (int i = 0; i < sizeof(buffer); i++) {
-            buffer[i] =  eventQueue.pendingClosures[eventQueue.tail];
-            eventQueue.tail = (eventQueue.tail + 1) & (PENDING_CLOSURE_SIZE - 1);
+            buffer[i] =  Dequeue(&eventQueue);
         }
         Node_t *node = (Node_t*)buffer;
         uint8_t data[node->size];
         for (int i = 0; i < node->size; i++) {
-            data[i] =  eventQueue.pendingClosures[eventQueue.tail];
-            eventQueue.tail = (eventQueue.tail + 1) & (PENDING_CLOSURE_SIZE - 1);
+            data[i] = Dequeue(&eventQueue);
         }
-	Function_t func = node->func;
+	    Function_t func = node->func;
         int size = node->size;
-        uint8_t buf[size];
-        memcpy(buf, data ,size);
         END_CRITICAL_SECTION
-        func(size, &buf);
+        func(node->size, &data);
     }
 }
 
@@ -51,8 +40,7 @@ void DelayedFunctionActivate(Function_t func) {
     node->size = 0;
     BEGIN_CRITICAL_SECTION
     for (int i = 0; i < nodeSize; i++) {
-        eventQueue.pendingClosures[eventQueue.head] = ((uint8_t*)node)[i];
-        eventQueue.head = (eventQueue.head + 1) & (PENDING_CLOSURE_SIZE - 1);
+        Enqueue(&eventQueue, buffer[i]);
     }
     END_CRITICAL_SECTION
 }
@@ -66,9 +54,9 @@ void EventActivate(uint16_t event, const uint16_t size, const void *data) {
     BEGIN_CRITICAL_SECTION
     Function_t *entry = closures[event];
     while (entry[entryIndex] != NULL && entryIndex < MAX_EVENT_LISTENERS) {
-        
-        size_t used = (eventQueue.head - eventQueue.tail) & (PENDING_CLOSURE_SIZE - 1);
-        size_t free = PENDING_CLOSURE_SIZE - used - 1;
+
+        size_t used = QueueSize(&eventQueue);
+        size_t free = QueueFreeSpace(&eventQueue);
         if (nodeSize > free) {
             fprintf(stderr, "Out of memory for closures\n");
             END_CRITICAL_SECTION
@@ -76,13 +64,11 @@ void EventActivate(uint16_t event, const uint16_t size, const void *data) {
         }
         uint8_t buffer[nodeSize];
         Node_t *node = (Node_t*)buffer;
-        node->data = (void*)&buffer[sizeof(Node_t)];
         node->size = size;
         node->func = entry[entryIndex];
-        memcpy(node->data, data, size);
+        memcpy(&buffer[sizeof(Node_t)], data, size);
         for (int i = 0; i < nodeSize; i++) {
-            eventQueue.pendingClosures[eventQueue.head] = ((uint8_t*)node)[i];
-            eventQueue.head = (eventQueue.head + 1) & (PENDING_CLOSURE_SIZE - 1);
+            Enqueue(&eventQueue, buffer[i]);
         }
         entryIndex++;
     }
@@ -128,8 +114,8 @@ void RemoveClosure(uint16_t event, Function_t func) {
 
 
 
-void InitEventQueue(void) {
+void EventQueue_Init(void) {
     INITIALIZE_CRITICAL_SECTION
     memset(closures, 0, sizeof(void*) * CLOSURE_MEM_SIZE * MAX_EVENT_LISTENERS);
-    eventQueue.head = eventQueue.tail = 0;
+    QueueInit(&eventQueue);
 }

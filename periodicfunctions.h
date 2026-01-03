@@ -3,7 +3,7 @@
 
 #include "includes.h"
 
-void InitPeriodicFunctions(void);
+void PeriodicFunctions_Init(void);
 void PeriodicFunction_IRQTick(void);
 void AddPeriodicFunction(Function_t func, uint16_t period);
 void RemovePeriodicFunction(Function_t func);

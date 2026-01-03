@@ -7,13 +7,13 @@
 #include <stdio.h>
 
 #include "events.h"
+#include "queue.h"
 
 typedef const void (*Function_t)(uint16_t, const void *);
 
 typedef struct {
     Function_t func;
     uint16_t size;
-    void *data;
 }Node_t;
 
 #endif //INCLUDES_H

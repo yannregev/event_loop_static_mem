@@ -6,7 +6,7 @@
 void EventActivate(uint16_t event, const uint16_t size, const void *data);
 void EventAddCallback(uint16_t event, Function_t func);
 void RemoveClosure(uint16_t event, Function_t func);
-void InitEventQueue(void);
+void EventQueue_Init(void);
 void DelayedFunctionActivate(Function_t func);
 void Run_Closures(void);
 

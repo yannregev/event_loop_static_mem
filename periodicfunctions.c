@@ -63,7 +63,7 @@ void AddPeriodicFunction(Function_t func, uint16_t period) {
     entry->func = func;
 }
 
-void InitPeriodicFunctions(void) {
+void PeriodicFunctions_Init(void) {
     INITIALIZE_CRITICAL_SECTION
     memset(periodicFunctions, 0, sizeof(periodicFunctions));
 }
