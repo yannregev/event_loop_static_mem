@@ -1,3 +1,0 @@
-/home/yannregev/code/event_loop_static_mem/build/CMakeFiles/libev.dir
-/home/yannregev/code/event_loop_static_mem/build/CMakeFiles/edit_cache.dir
-/home/yannregev/code/event_loop_static_mem/build/CMakeFiles/rebuild_cache.dir
