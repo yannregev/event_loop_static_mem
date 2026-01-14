@@ -16,7 +16,7 @@ void PeriodicFunction_IRQTick(void) {
     PeriodicFunction_t *entry = periodicFunctions;
     while (entry->func != NULL && entry < &periodicFunctions[PERIODIC_FUNC_SIZE]) {
         if (--entry->delay <= 0) {
-            DelayedFunctionActivate(entry->func);
+            QueueFunctionCallback(entry->func);
             entry->delay = entry->period;
         }
         entry++;

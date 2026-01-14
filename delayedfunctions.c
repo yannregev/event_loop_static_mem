@@ -16,7 +16,7 @@ void AddDelayedFunction(Function_t func, uint16_t delay) {
     if (func == NULL) return;
 
     if (delay == 0) { //Add to queue immediatly
-        DelayedFunctionActivate(func);
+        QueueFunctionCallback(func);
         return;
     }
     BEGIN_CRITICAL_SECTION
@@ -53,7 +53,7 @@ void DelayedFunctions_IRQTick(void) {
     BEGIN_CRITICAL_SECTION
     while (entry->func != NULL && entry < &delayedFunctions[PERIODIC_FUNC_SIZE]) {
         if (--entry->delay <= 0) {
-            DelayedFunctionActivate(entry->func);
+            QueueFunctionCallback(entry->func);
             RemoveDelayFunction(entry->func);
         } else {
             entry++;

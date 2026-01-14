@@ -3,7 +3,7 @@
 
 #include <inttypes.h>
 
-#define QEUEUE_SIZE 1024
+#define QEUEUE_SIZE 256
 typedef struct {
     uint16_t head;
     uint16_t tail;

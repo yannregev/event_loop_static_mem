@@ -30,7 +30,7 @@ void Run_EventQueue(void) {
     }
 }
 
-void DelayedFunctionActivate(Function_t func) {
+void QueueFunctionCallback(Function_t func) {
     if (func == NULL) { return; }
     const size_t nodeSize = sizeof(Node_t);
     uint8_t buffer[nodeSize];
