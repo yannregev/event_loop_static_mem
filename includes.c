@@ -2,8 +2,8 @@
 
 
 void Events_Init(void) {
-  DelayedFunction_Init();
   EventQueue_Init();
+  DelayedFunction_Init();
   PeriodicFunctions_Init();
 }
 

@@ -7,7 +7,7 @@ void EventActivate(uint16_t event, const uint16_t size, const void *data);
 void EventAddCallback(uint16_t event, Function_t func);
 void EventRemoveCallback(uint16_t event, Function_t func);
 void EventQueue_Init(void);
-void QueueFunctionCallback(Function_t func);
+void QueueFunctionCallback(Function_t func, const uint16_t size, const void *data);
 void Run_EventQueue(void);
 
 #endif

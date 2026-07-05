@@ -7,16 +7,16 @@ typedef struct {
    uint16_t period; 
 }PeriodicFunction_t;
 
-#define PERIODIC_FUNC_SIZE 64
-PeriodicFunction_t periodicFunctions[PERIODIC_FUNC_SIZE];
+#define DELAYED_FUNC_Q_SIZE 64
+PeriodicFunction_t periodicFunctions[DELAYED_FUNC_Q_SIZE];
 
 
 void PeriodicFunction_IRQTick(void) {
     BEGIN_CRITICAL_SECTION
     PeriodicFunction_t *entry = periodicFunctions;
-    while (entry->func != NULL && entry < &periodicFunctions[PERIODIC_FUNC_SIZE]) {
+    while (entry->func != NULL && entry < &periodicFunctions[DELAYED_FUNC_Q_SIZE]) {
         if (--entry->delay <= 0) {
-            QueueFunctionCallback(entry->func);
+            QueueFunctionCallback(entry->func, 0, NULL);
             entry->delay = entry->period;
         }
         entry++;
@@ -42,15 +42,11 @@ void RemovePeriodicFunction(Function_t func) {
 void AddPeriodicFunction(Function_t func, uint16_t period) {
     if (func == NULL) return;
 
-    if (period == 0) { //Add to queue immediatly
-        return;
-    }
-
     PeriodicFunction_t *entry = periodicFunctions;
     BEGIN_CRITICAL_SECTION
     while (entry->func != NULL && entry->func != func) {
         entry++;
-        if (entry >= &periodicFunctions[PERIODIC_FUNC_SIZE]) {
+        if (entry >= &periodicFunctions[DELAYED_FUNC_Q_SIZE]) {
             fprintf(stderr, "Out of delayed func memory!\n");
             return;
         }

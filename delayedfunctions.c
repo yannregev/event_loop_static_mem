@@ -9,22 +9,23 @@ typedef struct {
     uint16_t delay;
 }DelayedFunc_t;
 
-#define PERIODIC_FUNC_SIZE 64
-static DelayedFunc_t delayedFunctions[PERIODIC_FUNC_SIZE];
+#define DELAYED_FUNC_Q_SIZE 64
+static DelayedFunc_t delayedFunctions[DELAYED_FUNC_Q_SIZE];
 
 void AddDelayedFunction(Function_t func, uint16_t delay) {
     if (func == NULL) return;
 
     if (delay == 0) { //Add to queue immediatly
-        QueueFunctionCallback(func);
+        QueueFunctionCallback(func, 0, NULL);
         return;
     }
     BEGIN_CRITICAL_SECTION
     DelayedFunc_t *entry = delayedFunctions;
     while (entry->func != NULL && entry->func != func) {
         entry++;
-        if (entry > &delayedFunctions[PERIODIC_FUNC_SIZE]) {
+        if (entry > &delayedFunctions[DELAYED_FUNC_Q_SIZE]) {
             fprintf(stderr, "Out of delayed func memory!\n");
+            END_CRITICAL_SECTION
             return;
         }
     }
@@ -33,9 +34,9 @@ void AddDelayedFunction(Function_t func, uint16_t delay) {
     END_CRITICAL_SECTION
 }
 
-void RemoveDelayFunction(Function_t func) {
+static void shrinkDelayedFunctionsArray(Function_t func) 
+{
     DelayedFunc_t *entry = delayedFunctions;
-    BEGIN_CRITICAL_SECTION
     while (entry != NULL && entry->func != func) {
         entry++;
     }
@@ -45,16 +46,21 @@ void RemoveDelayFunction(Function_t func) {
         *entry = *(entry + 1);
         entry++;
     }
+}
+
+void RemoveDelayedFunction(Function_t func) {
+    BEGIN_CRITICAL_SECTION
+    shrinkDelayedFunctionsArray(func);
     END_CRITICAL_SECTION
 }
 
 void DelayedFunctions_IRQTick(void) {
     DelayedFunc_t *entry = delayedFunctions;
     BEGIN_CRITICAL_SECTION
-    while (entry->func != NULL && entry < &delayedFunctions[PERIODIC_FUNC_SIZE]) {
+    while (entry->func != NULL && entry < &delayedFunctions[DELAYED_FUNC_Q_SIZE]) {
         if (--entry->delay <= 0) {
-            QueueFunctionCallback(entry->func);
-            RemoveDelayFunction(entry->func);
+            QueueFunctionCallback(entry->func, 0, NULL);
+            shrinkDelayedFunctionsArray(entry->func);
         } else {
             entry++;
         }
