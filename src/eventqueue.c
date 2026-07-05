@@ -86,9 +86,13 @@ void EventAddCallback(uint16_t event, Function_t func) {
         entry++;
     }
 
-    if (*entry == func) { return; } // Event and func already registered
+    if (*entry == func) { // Event and func already registered
+        END_CRITICAL_SECTION
+        return; 
+    } 
 
     if (entry == &closures[event][MAX_EVENT_LISTENERS]) {
+        END_CRITICAL_SECTION
         fprintf(stderr, "Out of closure mem");
         return;
     }
