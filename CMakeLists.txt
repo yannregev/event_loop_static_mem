@@ -1,11 +1,10 @@
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.14)
 project(libev VERSION 0.1.0 LANGUAGES C)
 set(CMAKE_C_STANDARD 23)
 
 option(BUILD_TESTS "Build tests" ON)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_BINARY_DIR})
 
 add_subdirectory(src)
 
