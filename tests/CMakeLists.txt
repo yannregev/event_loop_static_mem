@@ -28,7 +28,7 @@ add_unit_test(
 set (TEST_EVENTQUEUE_SOURCES
     test_eventqueue.c
     fakes/fake_queue.c
-    ${CMAKE_SOURCE_DIR}/src/eventqueue.c
+    ${LIBENV_BINARY_DIR}/src/eventqueue.c
 )
 add_unit_test(
     NAME test_eventqueue
@@ -37,7 +37,7 @@ add_unit_test(
 set (TEST_PERIODICFUNCTIONS_SOURCES
     test_periodicfunctions.c
     fakes/fake_eventqueue.c
-    ${CMAKE_SOURCE_DIR}/src/periodicfunctions.c
+    ${LIBENV_BINARY_DIR}/src/periodicfunctions.c
 )
 add_unit_test(
     NAME test_periodicfunctions
@@ -46,7 +46,7 @@ add_unit_test(
 set (TEST_DELAYEDFUNCTIONS_SOURCES
     test_delayedfunctions.c
     fakes/fake_eventqueue.c
-    ${CMAKE_SOURCE_DIR}/src/delayedfunctions.c
+    ${LIBENV_BINARY_DIR}/src/delayedfunctions.c
 )
 add_unit_test(
     NAME test_delayedfunctions
