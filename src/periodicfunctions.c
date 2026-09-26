@@ -1,63 +1,65 @@
-#include "includes.h"
 #include "criticalsection.h"
+#include "includes.h"
 
 typedef struct {
-   Function_t func;
-   uint16_t delay;
-   uint16_t period; 
-}PeriodicFunction_t;
+  Function_t func;
+  uint16_t delay;
+  uint16_t period;
+} PeriodicFunction_t;
 
-#define DELAYED_FUNC_Q_SIZE 64
 PeriodicFunction_t periodicFunctions[DELAYED_FUNC_Q_SIZE];
 
-
 void PeriodicFunction_IRQTick(void) {
-    BEGIN_CRITICAL_SECTION
-    PeriodicFunction_t *entry = periodicFunctions;
-    while (entry->func != NULL && entry < &periodicFunctions[DELAYED_FUNC_Q_SIZE]) {
-        if (--entry->delay <= 0) {
-            QueueFunctionCallback(entry->func, 0, NULL);
-            entry->delay = entry->period;
-        }
-        entry++;
+  BEGIN_CRITICAL_SECTION
+  PeriodicFunction_t *entry = periodicFunctions;
+  while (entry->func != NULL &&
+         entry < &periodicFunctions[DELAYED_FUNC_Q_SIZE]) {
+    if (--entry->delay <= 0) {
+      QueueFunctionCallback(entry->func, 0, NULL);
+      entry->delay = entry->period;
     }
-    END_CRITICAL_SECTION
+    entry++;
+  }
+  END_CRITICAL_SECTION
 }
 
 void RemovePeriodicFunction(Function_t func) {
-    PeriodicFunction_t *entry = periodicFunctions;
-    while (entry != NULL && entry->func != func) {
-        entry++;
-    }
-    
-    if (entry->func != func) { return; }
-    BEGIN_CRITICAL_SECTION
-        while (*entry->func != NULL) {    // Shrink array
-        *entry = *(entry + 1);
-        entry++;
-    }
-    END_CRITICAL_SECTION
+  PeriodicFunction_t *entry = periodicFunctions;
+  while (entry != NULL && entry->func != func) {
+    entry++;
+  }
+
+  if (entry->func != func) {
+    return;
+  }
+  BEGIN_CRITICAL_SECTION
+  while (*entry->func != NULL) { // Shrink array
+    *entry = *(entry + 1);
+    entry++;
+  }
+  END_CRITICAL_SECTION
 }
 
 void AddPeriodicFunction(Function_t func, uint16_t period) {
-    if (func == NULL) return;
+  if (func == NULL)
+    return;
 
-    PeriodicFunction_t *entry = periodicFunctions;
-    BEGIN_CRITICAL_SECTION
-    while (entry->func != NULL && entry->func != func) {
-        entry++;
-        if (entry >= &periodicFunctions[DELAYED_FUNC_Q_SIZE]) {
-            fprintf(stderr, "Out of delayed func memory!\n");
-            return;
-        }
+  PeriodicFunction_t *entry = periodicFunctions;
+  BEGIN_CRITICAL_SECTION
+  while (entry->func != NULL && entry->func != func) {
+    entry++;
+    if (entry >= &periodicFunctions[DELAYED_FUNC_Q_SIZE]) {
+      fprintf(stderr, "Out of delayed func memory!\n");
+      return;
     }
-    END_CRITICAL_SECTION
-    entry->delay = period;
-    entry->period = period;
-    entry->func = func;
+  }
+  END_CRITICAL_SECTION
+  entry->delay = period;
+  entry->period = period;
+  entry->func = func;
 }
 
 void PeriodicFunctions_Init(void) {
-    INITIALIZE_CRITICAL_SECTION
-    memset(periodicFunctions, 0, sizeof(periodicFunctions));
+  INITIALIZE_CRITICAL_SECTION
+  memset(periodicFunctions, 0, sizeof(periodicFunctions));
 }

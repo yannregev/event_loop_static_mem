@@ -6,3 +6,4 @@ main.c
 criticalsection.h
 criticalsection.c
 /include/events.h
+/include/definitions.h

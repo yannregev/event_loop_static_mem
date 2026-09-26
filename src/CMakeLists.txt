@@ -8,4 +8,4 @@ add_library(libev STATIC
     queue.c
 )
 
-target_include_directories(libev PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(libev PUBLIC ${LIBENV_SOURCE_DIR}/include)
