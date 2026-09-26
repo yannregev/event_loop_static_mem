@@ -5,3 +5,4 @@ CMakePresets.json
 main.c
 criticalsection.h
 criticalsection.c
+/include/events.h
